@@ -2,31 +2,32 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"net/http"
 	"os"
 	"strconv"
-	"time"
 )
 
 func main() {
-	vars := os.Environ()
-	for _, v := range vars {
-		fmt.Println(v)
-	}
-	fmt.Println("-----------------------")
-	sleepTimer, _ := strconv.Atoi(os.Getenv("HWC_SLEEPTIMER"))
-	sleepCounter := 1
+	sleepCounter, _ := strconv.Atoi(os.Getenv("HWC_SLEEPTIMER"))
 
-	if sleepTimer == 0 {
-		for {
-			fmt.Printf("Hello for the %d time \n", sleepCounter)
-			time.Sleep(1 * time.Second)
-			sleepCounter++
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "Hello for the %d time \n", sleepCounter)
+		fmt.Printf("Hello for the %d time \n", sleepCounter)
+		sleepCounter++
+	})
+
+	http.HandleFunc("/env", func(w http.ResponseWriter, r *http.Request) {
+		for _, v := range os.Environ() {
+			fmt.Fprintf(w, "%s \n", v)
+			fmt.Printf("%s \n", v)
 		}
-	} else {
-		for sleepCounter <= sleepTimer {
-			fmt.Printf("Hello for the %d time \n", sleepCounter)
-			time.Sleep(1 * time.Second)
-			sleepCounter++
-		}
-	}
+
+	})
+
+	http.HandleFunc("/kill", func(w http.ResponseWriter, r *http.Request) {
+		os.Exit(5)
+	})
+
+	log.Fatal(http.ListenAndServe(":80", nil))
 }

@@ -7,3 +7,5 @@ services:
       dockerfile: dockerfile
     environment:
       HWC_SLEEPTIMER: "5"
+    ports:
+      - 80:80
