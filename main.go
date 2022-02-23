@@ -8,7 +8,11 @@ import (
 )
 
 func main() {
-
+	vars := os.Environ()
+	for _, v := range vars {
+		fmt.Println(v)
+	}
+	fmt.Println("-----------------------")
 	sleepTimer, _ := strconv.Atoi(os.Getenv("HWC_SLEEPTIMER"))
 	sleepCounter := 1
 
