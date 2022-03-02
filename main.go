@@ -16,14 +16,21 @@ func main() {
 			fmt.Printf("%s \n", v)
 		}
 	}
+	timedKill := os.Getenv("HWC_TIMEDKILL")
+	sleepTimer, _ := strconv.Atoi(os.Getenv("HWC_SLEEPTIMER"))
+	exitcode, _ := strconv.Atoi(os.Getenv("HWC_EXITCODE"))
+	if timedKill == "true" {
+		fmt.Printf("This service will be killed in %d seconds \n", sleepTimer)
+		time.Sleep(time.Duration(sleepTimer) * time.Second)
+		os.Exit(exitcode)
+	}
 
-	sleepCounter, _ := strconv.Atoi(os.Getenv("HWC_SLEEPTIMER"))
-
-	// increments sleeptimer, starting from HWC_SLEEPTIMER
+	counter := 0
+	// increments sleeptimer, starting from HWC_SLEEPTIMEr
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hello for the %d time \n", sleepCounter)
-		fmt.Printf("Hello for the %d time \n", sleepCounter)
-		sleepCounter++
+		fmt.Fprintf(w, "Hello for the %d time \n", counter)
+		fmt.Printf("Hello for the %d time \n", counter)
+		counter++
 	})
 
 	// Prints environment variables
@@ -36,14 +43,14 @@ func main() {
 	})
 	// Kills the service
 	http.HandleFunc("/kill", func(w http.ResponseWriter, r *http.Request) {
-		os.Exit(5)
+		os.Exit(exitcode)
 	})
 	// Kills the service after 60 sec
 	http.HandleFunc("/timedkill", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "This service will be killed in 60 seconds \n")
 		fmt.Printf("This service will be killed in 60 seconds \n")
-		time.Sleep(60 * time.Second)
-		os.Exit(5)
+		time.Sleep(time.Duration(sleepTimer) * time.Second)
+		os.Exit(exitcode)
 	})
 
 	log.Fatal(http.ListenAndServe(":80", nil))
