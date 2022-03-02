@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hello-world-configmap
+data:
+  HWC_SLEEPTIMER: "600"
+  HWC_PRINTVAR: "true"
+  HWC_TIMEDKILL: "true"
+  HWC_EXITCODE: "0"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: hello-world-secret
+type: Opaque
+data:
+  THISVALUEISVERYSECRET: cHJvZHVjdF9yb2JvdA==
+  THISVALUEISVERYSECRETTOO: cHIwZHIwYjB0
+#stringData:
+#  THISVALUEISVERYSECRET: cHJvZHVjdF9yb2JvdA==
+#  THISVALUEISVERYSECRETTOO: cHIwZHIwYjB0
+#  You can also use stringData instead of data and instead use unencoded values,
+#  Kubernetes then encodes the values for you when you create or update the secret.
+#  This is useful when your deployment process generates configuration,
+#  and you want to set the value at this stage.
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: hello-world-cronjob
+spec:
+  schedule: "* * * * *"
+  concurrencyPolicy: Forbid
+  #ttlSecondsAfterFinished: 5
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: hello-world-label
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: hello-world-container
+              image: technicallyjoe/hello-world-container:1.0.6
+              ports:
+                - containerPort: 80
+              envFrom:
+                - configMapRef:
+                    name: hello-world-configmap
+                - secretRef:
+                    name: hello-world-secret
