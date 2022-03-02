@@ -42,7 +42,7 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: hello-world-container
-              image: technicallyjoe/hello-world-container:1.0.6
+              image: technicallyjoe/hello-world-container:1.0.7
               ports:
                 - containerPort: 80
               envFrom:
