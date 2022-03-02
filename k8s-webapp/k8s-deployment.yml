@@ -5,6 +5,8 @@ metadata:
 data:
   HWC_SLEEPTIMER: "20"
   HWC_PRINTVAR: "true"
+  HWC_TIMEDKILL: "false"
+  HWC_EXITCODE: "0"
 ---
 apiVersion: v1
 kind: Secret
@@ -39,7 +41,7 @@ spec:
     spec:
       containers:
         - name: hello-world-container
-          image: technicallyjoe/hello-world-container:1.0.4
+          image: technicallyjoe/hello-world-container:1.0.6
           ports:
             - containerPort: 80
           envFrom:
