@@ -1,0 +1,9 @@
+dependencies:
+- name: sealed-secrets
+  repository: https://bitnami-labs.github.io/sealed-secrets
+  version: 2.1.4
+- name: sealed-secrets-web
+  repository: https://bakito.github.io/helm-charts
+  version: 2.7.1
+digest: sha256:a5d0251ab5859e3c00693dbf72104923e7d40a77cfaa29962dc40ecc5bd14685
+generated: "2022-03-23T23:44:31.8574437+01:00"

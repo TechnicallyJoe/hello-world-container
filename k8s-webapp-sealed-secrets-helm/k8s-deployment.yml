@@ -1,0 +1,75 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hello-world-configmap
+data:
+  HWC_SLEEPTIMER: "20"
+  HWC_PRINTVAR: "true"
+  HWC_TIMEDKILL: "false"
+  HWC_EXITCODE: "0"
+---
+# This needs to be encrypted using Sealed Secrets before deployment - DON'T DEPLOY THIS AS WELL. THE SEALED SECRET WILL HANDLE THIS
+#apiVersion: v1
+#kind: Secret
+#metadata:
+#  name: hello-world-secret
+#type: Opaque
+#data:
+#  THISVALUEISVERYSECRET: cHJvZHVjdF9yb2JvdA==
+#  THISVALUEISVERYSECRETTOO: cHIwZHIwYjB0
+#---
+# Example of a sealed secret - change this as needed.
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: hello-world-secret
+  namespace: default
+spec:
+  encryptedData:
+    THISVALUEISVERYSECRET: AgBVyhB9Lljrdb+83yPpDievLNkDNLse7AwnnMZnpzdvC6ENBwa6elHVxg2Q5Cz1I0wpMdzvH6Qxk0iJzqbi35UGdEZQ4BTOjcsFMUdiHT3Jk3c7oPt6dlNfG8O7/05BQOfy+aZM8itAXP7+4zpyQpIs1RUSyyvQzTPvVylWsWGJoQo6NP0cI3hHO/QICvpZE3Vb9Q40u8HoUu9emYLaHMqrIY6uka4GquGiv0R38jHTGWwcQclZ2C7e28Pvrby41b1XivEhWr44qvj597rVvLPiAeqap3Kf91AmfdJBtIEWdsJ+RAQAWZ0ESF5kZrz7aYpv1X5BZcIjKfyhbZt+Z1FtF2MUPsniTRmgugDEpfTY+czvuPPxBg9C4FglECX/Wo+c8xoOnpM8++/ltu9g4aClJqIA03IASySlDHe0omVe+SUcATwe8bfO9Hs1YwvMiXlf6QQ2uLkR9XVdhdjnyjXu3rlGAIUkNKfT593dLWKEJa4BgVBy446RDHSwcVvkSRQBWgIfBetGgwkNsy0w+VruZwTkVyky99SgCmqZxgLSbx7F0aOFl9FH8Ph3X1wDP+A0BYfTh7xeq/wr5kqNag+moUs+ENRFNdJwlmglWofkvN9pYHnsenfNNplXcfpj0gOcaHV5ONW5ImDHtWknmAlXEFHYexu6yoh7Nguwx9uFSxAKFHa0Ylnxda+HEZnrAYHWc1ymOj0quUB/rrYX
+    THISVALUEISVERYSECRETTOO: AgDMEJIqh3uV4NJOoRhu/sLWh5242yAl7JVold3elzXbq4FghdffTojykrK8QI+7vIYGnw48gZwYnH1MBlFFuIO6zht5QGK7P3FI/M9x1Q0xcPagXkkY0hjkl64xb3C+JbyHbsCuZEiZwonzKRaPlVVggcoihNonDl6ljgk4vhCwAz69ArsDErpaJvZb8ZUpN0+GKLcQRofy0HPPw4pvKKRqbNJax5Ka47xPjvrXXHHoqgtcO+vez+NNh/8ypBozyv6GdOtIOJkm/P2U5Jz/NKM3N6uM2O+rxK15IK7AfivW9vNNzHhg1EH1af1Olny/a4F90L8bTU9S8ko3zp0bnmVqWswXGGot9IIpiHHt6bkQzVd7FPQD4nyyN8DPz0EX7l5vVny9mtsdzZDI2aZ6CcqJlin5R7NVR1whVU8hqp6vD3lheno/UoWcMWSqpPy5OmeNAJpOxg7Y4dzsxWZ/wwDJOuf4EJ2f0vVur7OrDzvF4yC7SQKkfUKZ9keAUNsGoUrDHBhluz+u6vPcsejmB45iznCsYe5dRZU5wDJtOrjaEnOkq2SEB8rxQHx16dG2g41fD6W43d/sgLoEu0yzZiMtCG9uV8FpdR55CjUJkSReUYw206TVIp9eh9wjNkUCiKRBsjrCtdZNmy29lPiRHAbU3Rm4u8aw+rgCLtngM4dYP3ztcw4ikT9QCRTwX9PJXAaGb/YZImQDSGE=
+  template:
+    metadata:
+      name: hello-world-secret
+      namespace: default
+    type: Opaque
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-world-deployment
+spec:
+  selector:
+    matchLabels:
+      app: hello-world-label
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: hello-world-label
+    spec:
+      containers:
+        - name: hello-world-container
+          image: technicallyjoe/hello-world-container:1.0.7
+          ports:
+            - containerPort: 80
+          envFrom:
+            - configMapRef:
+                name: hello-world-configmap
+            - secretRef:
+                name: hello-world-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-world-service
+  labels:
+    app: hello-world-label
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+  selector:
+    app: hello-world-label
