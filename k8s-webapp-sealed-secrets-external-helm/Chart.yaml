@@ -24,6 +24,6 @@ version: 0.1.0
 appVersion: "0.1.0"
 
 dependencies:
-  - name: k8s-webapp
+  - name: k8s-webapp-sealed-secrets-helm
     version: 0.1.0
     repository: https://helmrepotest.blob.core.windows.net/k8s-webapp?sp=r&st=2022-03-24T14:14:46Z&se=2050-03-24T22:14:46Z&spr=https&sv=2020-08-04&sr=c&sig=KHsyEir2B1HShvpn1W0lb2eCT9f%2FcraNI8r9z6xsWvQ%3D
