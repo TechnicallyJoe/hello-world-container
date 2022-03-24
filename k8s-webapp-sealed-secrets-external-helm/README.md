@@ -2,7 +2,7 @@
 
 kubectl apply -f k8s-webapp-sealed-secrets-helm
 
-kubectl port-forward svc/hello-world-service 8000:80
+kubectl port-forward svc/svc/hello-world-container-app-hello-world-service 8000:80
 
 ## Requirements
 
@@ -31,5 +31,5 @@ helm repo add bakito https://bakito.github.io/helm-charts
 helm repo update
 helm upgrade --install sealed-secrets-web bakito/sealed-secrets-web --set "image.args={--format=yaml,--disable-load-secrets}"
 
-kubectl port-forward svc/sealed-secrets-web 8080:80
+kubectl port-forward svc/hello-world-container-app-sealed-secrets-web 8001:80
 ```
