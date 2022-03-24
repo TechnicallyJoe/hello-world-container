@@ -1,0 +1,5 @@
+sealed-secrets-web:
+  image:
+    args:
+      - --format=yaml
+      - --disable-load-secrets
