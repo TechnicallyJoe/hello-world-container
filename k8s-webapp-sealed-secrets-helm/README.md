@@ -31,5 +31,5 @@ helm repo add bakito https://bakito.github.io/helm-charts
 helm repo update
 helm upgrade --install sealed-secrets-web bakito/sealed-secrets-web --set "image.args={--format=yaml,--disable-load-secrets}"
 
-kubectl port-forward svc/sealed-secrets-web 8080:80
+kubectl port-forward svc/k8s-webapp-sealed-secrets-helm-sealed-secrets-web 8001:80
 ```
